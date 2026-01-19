@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
     environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.development
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-config.settings.development}
       - USE_SQLITE=False
       - DB_HOST=db
       - DB_PORT=5432

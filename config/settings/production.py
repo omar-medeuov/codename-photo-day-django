@@ -14,6 +14,8 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # Database - PostgreSQL for production
 DATABASE_URL = os.getenv("DATABASE_URL", "")
+DB_SSLMODE = os.getenv("DB_SSLMODE", "require")
+
 if DATABASE_URL:
     import re
 
@@ -33,7 +35,7 @@ if DATABASE_URL:
                 "PORT": match.group("port"),
                 "CONN_MAX_AGE": 60,
                 "OPTIONS": {
-                    "sslmode": "require",
+                    "sslmode": DB_SSLMODE,
                 },
             }
         }
@@ -48,7 +50,7 @@ else:
             "PORT": os.getenv("DB_PORT", "5432"),
             "CONN_MAX_AGE": 60,
             "OPTIONS": {
-                "sslmode": "require",
+                "sslmode": DB_SSLMODE,
             },
         }
     }
@@ -57,10 +59,10 @@ else:
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 31536000
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "True").lower() in ("true", "1", "yes")
+SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "True").lower() in ("true", "1", "yes")
+CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "True").lower() in ("true", "1", "yes")
+SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
