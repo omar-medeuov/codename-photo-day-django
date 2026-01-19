@@ -28,6 +28,15 @@ python manage.py migrate --noinput
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Execute the main command
-echo "Starting server..."
-exec "$@"
+# Start the appropriate server
+if [ "$USE_GUNICORN" = "true" ]; then
+    echo "Starting Gunicorn server..."
+    exec gunicorn config.wsgi:application \
+        --bind 0.0.0.0:8000 \
+        --workers ${GUNICORN_WORKERS:-2} \
+        --access-logfile - \
+        --error-logfile -
+else
+    echo "Starting Django development server..."
+    exec "$@"
+fi
